@@ -1,10 +1,13 @@
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import InstruccionesScreen from './src/screens/InstruccionesScreen';
+import { NavigationContainer } from '@react-navigation/native';
+import AppNavigator from './src/navigation/AppNavigator';
 
 export default function App() {
   return (
     <SafeAreaProvider>
-      <InstruccionesScreen />
+      <NavigationContainer>
+        <AppNavigator />
+      </NavigationContainer>
     </SafeAreaProvider>
   );
 }   
