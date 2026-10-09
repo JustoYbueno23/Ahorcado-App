@@ -1,7 +1,9 @@
-import { StyleSheet, Text, View, SectionList } from 'react-native';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import React from "react";
+import { StyleSheet, Text, View, SectionList, Pressable } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from "@expo/vector-icons";
 import { colores } from '../theme/colores';
+import { useNavigation } from '@react-navigation/native';
 
 const DATA = [
     {
@@ -16,17 +18,32 @@ const DATA = [
 ];
 
 export default function InstruccionesScreen() {
-    return (
-        <SafeAreaProvider>
-            <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
-                <Text style={styles.text}>Reglas del juego</Text>
+    const abrirConfiguracion = () =>{/*Por ahora nada, luego lo cambio cuando
+        las funciones */};
 
+    return (
+            <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
+                <View style={styles.topBar}>
+                    <View style={styles.espaciador}/>
+                    <Text style={styles.tituloPantalla}>Reglas</Text>
+                    <Pressable
+                        style={({ pressed }) => [
+                            styles.configButton,
+                            pressed && styles.configButtonPresionado,
+                        ]}
+                        onPress={abrirConfiguracion}
+                        accessibilityRole="button"
+                        accessibilityLabel="Abrir configuracion"
+                    >
+                        <Ionicons name='settings-outline' size={24} color={colores.encabezado}/>
+                    </Pressable>
+                </View>
                 <SectionList
                     sections={DATA}
                     keyExtractor={(item, index) => item + index}
                     renderItem={({ item }) => (
                         <View style={styles.item}>
-                            <Text style={styles.title}>{item}</Text>
+                            <Text style={styles.itemText}>{item}</Text>
                         </View>
                     )}
                     renderSectionHeader={({ section: { title } }) => (
@@ -100,8 +117,6 @@ export default function InstruccionesScreen() {
                     )}
                 />
             </SafeAreaView>
-
-        </SafeAreaProvider >
     );
 }
 
@@ -111,16 +126,36 @@ const styles = StyleSheet.create({
         padding: 16,
         backgroundColor: '#fff'
     },
-    text: {
+
+    topBar:{
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between'
+    },
+
+    espaciador: {
+        width: 48,
+        height: 48,
+    },
+
+    tituloPantalla:{
         fontSize: 26,
         fontWeight: 'bold',
-        padding: 12,
-        textAlign: 'center',
-        backgroundColor: colores.encabezado,
-        color: 'white',
-        borderRadius: 10,
-        marginBottom: 10,
+        color: colores.encabezado,
     },
+
+    configButton:{
+        width: 48,
+        height: 48,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 24,
+    },
+
+    configButtonPresionado: {
+        opacity: 0.6,
+    },
+
     header: {
         fontSize: 18,
         fontWeight: 'bold',
@@ -129,18 +164,22 @@ const styles = StyleSheet.create({
         color: colores.encabezado,
         textAlign: 'center',
     },
+
     item: {
         paddingVertical: 6,
     },
+
     itemText: {
         fontSize: 17,
         color: '#334155',
         textAlign: 'center',
     },
+
     footerContainer: {
         marginTop: 5,
         marginBottom: 30,
     },
+
     tabla: {
         borderWidth: 1,
         borderColor: '#cbd5e1',
@@ -148,34 +187,42 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
         backgroundColor: '#f8fafc',
     },
+
     fila: {
         flexDirection: 'row',
         borderBottomWidth: 1,
         borderBlockColor: '#cbd5e1'
     },
+
     ultimaFila: {
         borderBottomWidth: 0,
     },
+
     cabecera: {
         borderBlockColor: '#e2e8f0'
     },
+
     celda: {
         flex: 1,
         paddingVertical: 12,
         paddingHorizontal: 8,
         textAlign: 'center'
     },
+
     textoCelda: {
         fontSize: 14,
         color: '#334155',
         textAlign: 'center'
     },
+
     textoCabecera: {
         fontWeight: 'bold',
     },
+
     colAccion: {
         flex: 2,
     },
+
     colPuntos: {
         flex: 1,
     },
