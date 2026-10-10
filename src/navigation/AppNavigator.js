@@ -20,27 +20,33 @@ export default function AppNavigator() {
 
             <Stack.Screen name="Categoria" component={CategoriaScreen} 
             options={{
+                headerShown: false,
                 title: 'Categoria y nivel'
+                
             }} />
 
             <Stack.Screen name="Juego" component={JuegoScreen} 
             options={{
+                headerShown: false,
                 title: 'Juego'
             }} />
 
             <Stack.Screen name="Instrucciones" component={InstruccionesScreen} 
             options={{
+                headerShown: false,
                 title: 'Instrucciones'
             }} />
 
             <Stack.Screen name="Estadisticas" component={EstadisticasScreen} 
             options={{
+                headerShown: false,
                 title: 'Estadisticas'
             }} />
             
             <Stack.Screen name="Configuracion" component={ConfiguracionScreen} 
             options={{
-                title: 'Estadisticas'
+                headerShown: false,
+                title: 'Configuracion'
             }} />
         </Stack.Navigator>
     );
