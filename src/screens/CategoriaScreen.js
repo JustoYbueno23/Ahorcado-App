@@ -4,17 +4,24 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { colores } from "../theme/colores";
 import { useNavigation } from '@react-navigation/native';
+import { useState } from "react";
 
 export default function CategoriaScreen({ route }) {
     const navigation = useNavigation();
-    //const [text] = route.CategoriaScreen;
+    const nombre = route.params ? route.params.nombre: '';
+    const [categoria, setCategoria] = useState('');
+    const [nivel, setNivel] = useState('');
 
     const abrirConfiguracion = () => {
         navigation.navigate('Configuracion', { nombre: 'Configuracion' });
     };
 
     const abrirJuego = () => {
-        navigation.navigate('Juego');
+        if (categoria === '' || nivel === '') {
+            alert('Elige una categoria  y un nivel para jugar');
+            return;
+        }
+        navigation.navigate('Juego', { nombre: nombre, categoria: categoria, nivel: nivel });
     }
 
     return (
@@ -36,51 +43,52 @@ export default function CategoriaScreen({ route }) {
                 </Pressable>
             </View>
 
+            <Text> Hola {nombre} </Text>
+
             <View style={styles.seccionCate}>
                 <Text style={styles.tituloPantalla}>CATEGORIA</Text>
 
-                <Pressable style={({ pressed }) =>
-                    [
-                        styles.Button,
-                        pressed && styles.ButtonPresionado,
-                    ]}
-                    onPress={abrirJuego}>
+                <Pressable style = {[
+                    styles.Button,
+                    categoria === 'capitales' && styles.ButtonActivo
+                ]}
+                    onPress={() => setCategoria('capitales')}>
                     <Text style={styles.textButton}> Capitales </Text>
                 </Pressable>
 
                 <Pressable style={({ pressed }) =>
                     [
                         styles.Button,
-                        pressed && styles.ButtonPresionado,
+                        categoria === 'Animales' && styles.ButtonActivo
                     ]}
-                    onPress={abrirJuego}>
+                    onPress={() => setCategoria('Animales')}>
                     <Text style={styles.textButton}> Animales </Text>
                 </Pressable>
 
                 <Pressable style={({ pressed }) =>
                     [
                         styles.Button,
-                        pressed && styles.ButtonPresionado,
+                        categoria === 'Frutas' && styles.ButtonActivo,
                     ]}
-                    onPress={abrirJuego}>
+                    onPress={() => setCategoria('Frutas')}>
                     <Text style={styles.textButton}> Frutas </Text>
                 </Pressable>
 
                 <Pressable style={({ pressed }) =>
                     [
                         styles.Button,
-                        pressed && styles.ButtonPresionado,
+                        categoria === 'Comidas' && styles.ButtonActivo,
                     ]}
-                    onPress={abrirJuego}>
+                    onPress={() => setCategoria('Comidas')}>
                     <Text style={styles.textButton}> Comidas </Text>
                 </Pressable>
 
                 <Pressable style={({ pressed }) =>
                     [
                         styles.Button,
-                        pressed && styles.ButtonPresionado,
+                        categoria === 'Aleatorio' && styles.ButtonActivo,
                     ]}
-                    onPress={abrirJuego}>
+                    onPress={() => setCategoria('Aleatorio')}>
                     <Text style={styles.textButton}> Aleatorio </Text>
                 </Pressable>
 
@@ -90,31 +98,41 @@ export default function CategoriaScreen({ route }) {
                         <Pressable style={({ pressed }) =>
                             [
                                 styles.buttonLevel,
-                                pressed && styles.ButtonPresionado,
+                                nivel === 'Facil' && styles.ButtonActivo,
                             ]}
-                            onPress={abrirJuego}>
+                            onPress={() => setNivel('Facil')}>
                             <Text style={styles.textButton}> Facil </Text>
                         </Pressable>
 
                         <Pressable style={({ pressed }) =>
                             [
                                 styles.buttonLevel,
-                                pressed && styles.ButtonPresionado,
+                                nivel === 'Medio' && styles.ButtonActivo,
                             ]}
-                            onPress={abrirJuego}>
+                            onPress={() => setNivel('Medio')}>
                             <Text style={styles.textButton}> Medio </Text>
                         </Pressable>
 
                         <Pressable style={({ pressed }) =>
                             [
                                 styles.buttonLevel,
-                                pressed && styles.ButtonPresionado,
+                                nivel === 'Dificil' && styles.ButtonActivo,
                             ]}
-                            onPress={abrirJuego}>
+                            onPress={() => setNivel('Dificil')}>
                             <Text style={styles.textButton}> Dificil </Text>
                         </Pressable>
                     </View>
+                </View>
 
+                <View style={styles.continuar}>
+                    <Pressable style={({ pressed }) =>
+                        [
+                            styles.buttonContinuar,
+                            pressed && styles.ButtonPresionado,
+                        ]}
+                        onPress={abrirJuego}>
+                        <Text style={styles.textButton}> CONTINUAR </Text>
+                    </Pressable>
                 </View>
 
             </View>
@@ -146,71 +164,53 @@ const styles = StyleSheet.create({
         color: colores.encabezado,
     },
 
-    logo: {
-        width: 370,
-        height: 200,
-        alignSelf: 'center',
-        marginVertical: 8,
-    },
-
     configButton: {
-        width: 48,
-        height: 48,
+        width:48,
+        height:48,
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 24,
     },
 
-    configButtonPresionado: {
+    ButtonPresionado:{
         opacity: 0.6,
     },
 
-    seccionCate: {
+    seccionCate:{
         flex: 1,
-        justifyContent: 'flex-start ',
         gap: 12,
         paddingBottom: 16,
     },
 
-    input: {
-        height: 48,
-        borderWidth: 1,
-        borderColor: '#CBD5E1',
-        borderRadius: 8,
-        paddingHorizontal: 12,
-        fontSize: 16,
-        backgroundColor: colores.superficie,
-    },
-
-    Button: {
+    Button:{
         minHeight: 48,
         borderRadius: 8,
         backgroundColor: colores.boton,
-        alignItems: "center",
-        justifyContent: "center",
-        paddingVertical: 12,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 12
     },
 
-    ButtonPresionado: {
-        opacity: 0.6,
+    ButtonActivo:{
+        backgroundColor: colores.encabezado,
     },
 
     textButton: {
-        color: "#fff",
+        color: '#fff',
         fontSize: 16,
-        fontWeight: "bold",
+        fontWeight: 'bold',
     },
 
     seccionDifi:{
-        marginTop: 8,
+        marginTop:8,
     },
 
     filaNiveles:{
         flexDirection: 'row',
-        gap: 8,
+        gap:8,
     },
 
-    buttonLevel: {
+    buttonLevel:{
         flex: 1,
         minHeight: 48,
         borderRadius: 8,
@@ -220,4 +220,16 @@ const styles = StyleSheet.create({
         paddingVertical: 12,
     },
 
+    continuar: {
+        marginTop: 12,
+    },
+
+    buttonContinuar:{
+        minHeight: 48,
+        borderRadius: 8,
+        backgroundColor: colores.boton,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 12,
+    },
 });
