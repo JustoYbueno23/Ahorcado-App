@@ -7,7 +7,7 @@ import Teclado from '../components/Teclado';
 export default function JuegoScreen({ route }) {
     const categoria = route.params ? route.params.categoria : 'Aleatoria';
     const nivel = route.params ? route.params.nivel : 'Facil';
-    const { palabra, pista, elegirPalabra} = useJuego(categoria, nivel);
+    const { palabra, pista, elegirPalabra, procesar, aciertos, fallos} = useJuego(categoria, nivel);
 
     React.useEffect(() => {
         elegirPalabra();
@@ -18,7 +18,7 @@ export default function JuegoScreen({ route }) {
             <Text>{categoria} - {nivel}</Text>
             <Text>{palabra} - {pista}</Text>
 
-            <Teclado/>
+            <Teclado procesar={procesar} aciertos={aciertos} fallos={fallos}/>
         </View>
     );
 
