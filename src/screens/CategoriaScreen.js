@@ -59,9 +59,9 @@ export default function CategoriaScreen({ route }) {
                 <Pressable style={({ pressed }) =>
                     [
                         styles.Button,
-                        categoria === 'Animales' && styles.ButtonActivo
+                        categoria === 'Animales Colombia' && styles.ButtonActivo
                     ]}
-                    onPress={() => setCategoria('Animales')}>
+                    onPress={() => setCategoria('Animales Colombia')}>
                     <Text style={styles.textButton}> Animales </Text>
                 </Pressable>
 
@@ -77,19 +77,19 @@ export default function CategoriaScreen({ route }) {
                 <Pressable style={({ pressed }) =>
                     [
                         styles.Button,
-                        categoria === 'Comidas' && styles.ButtonActivo,
+                        categoria === 'Comidas Tipicas' && styles.ButtonActivo,
                     ]}
-                    onPress={() => setCategoria('Comidas')}>
+                    onPress={() => setCategoria('Comidas Tipicas')}>
                     <Text style={styles.textButton}> Comidas </Text>
                 </Pressable>
 
                 <Pressable style={({ pressed }) =>
                     [
                         styles.Button,
-                        categoria === 'Aleatorio' && styles.ButtonActivo,
+                        categoria === 'Aleatoria' && styles.ButtonActivo,
                     ]}
-                    onPress={() => setCategoria('Aleatorio')}>
-                    <Text style={styles.textButton}> Aleatorio </Text>
+                    onPress={() => setCategoria('Aleatoria')}>
+                    <Text style={styles.textButton}> Aleatoria </Text>
                 </Pressable>
 
                 <View style={styles.seccionDifi}>
