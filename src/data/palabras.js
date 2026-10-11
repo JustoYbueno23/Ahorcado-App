@@ -2,7 +2,7 @@ export const PALABRAS = [
     /** 
      * Nivel Facil
      */
-    { palabra: 'TUNJA', categoria: 'capitales', pista: 'Capital de Boyaca' },
+    { palabra: 'TUNJA', categoria: 'capitales', pista: 'Capital de Boyacá' },
     { palabra: 'PASTO', categoria: 'capitales', pista: 'Capital de Nariño' },
     { palabra: 'NEIVA', categoria: 'capitales', pista: 'Capital del Huila' },
     { palabra: 'IBAGUE', categoria: 'capitales', pista: 'Capital del Tolima' },
@@ -10,7 +10,7 @@ export const PALABRAS = [
 
     { palabra: 'PUMA', categoria: 'Animales Colombia', pista: 'Gran felino americano' },
     { palabra: 'TUCAN', categoria: 'Animales Colombia', pista: 'Ave tropical de pico grande' },
-    { palabra: 'ZORRO', categoria: 'Animales Colombia', pista: 'canino silvestre nocturno' },
+    { palabra: 'ZORRO', categoria: 'Animales Colombia', pista: 'Canino silvestre nocturno' },
     { palabra: 'CONDOR', categoria: 'Animales Colombia', pista: 'Ave nacional de los Andes' },
     { palabra: 'JAGUAR', categoria: 'Animales Colombia', pista: 'Felino manchado de la selva' },
 
@@ -29,11 +29,11 @@ export const PALABRAS = [
     /**
      * Nivel Medio
      */
-    { palabra: 'LETICI', categoria: 'capitales', pista: 'Capital deL Amazonas' },
+    { palabra: 'LETICIA', categoria: 'capitales', pista: 'Capital del Amazonas' },
     { palabra: 'ARMENIA', categoria: 'capitales', pista: 'Capital de Quindío' },
     { palabra: 'RIOHACHA', categoria: 'capitales', pista: 'Capital de La Guajira' },
     { palabra: 'MONTERIA', categoria: 'capitales', pista: 'Capital de Córdoba' },
-    { palabra: 'MANIZALES', categoria: 'capitales', pista: 'Capital de Norte de caldas' },
+    { palabra: 'MANIZALES', categoria: 'capitales', pista: 'Capital de Caldas' },
 
     { palabra: 'TAPIRES', categoria: 'Animales Colombia', pista: 'Grandes mamíferos herbívoros' },
     { palabra: 'COATÍES', categoria: 'Animales Colombia', pista: 'Mamíferos omnívoros de cola larga' },
@@ -48,7 +48,7 @@ export const PALABRAS = [
     { palabra: 'MARACUYÁ', categoria: 'Frutas', pista: 'Fruta de la pasión aromática' },
 
     { palabra: 'PATACÓN', categoria: 'Comidas Tipicas', pista: 'Rodaja de plátano verde frito' },
-    { palabra: 'MONDANGO', categoria: 'Comidas Tipicas', pista: 'Sopa tradicional de callos' },
+    { palabra: 'MONDONGO', categoria: 'Comidas Tipicas', pista: 'Sopa tradicional de callos' },
     { palabra: 'AREQUIPE', categoria: 'Comidas Tipicas', pista: 'Dulce de leche tradicional' },
     { palabra: 'SANCOCHO', categoria: 'Comidas Tipicas', pista: 'Sopa robusta con carnes y tubérculos' },
     { palabra: 'BUÑUELOS', categoria: 'Comidas Tipicas', pista: 'Masas fritas redondas de queso' },
@@ -58,12 +58,12 @@ export const PALABRAS = [
      */
     { palabra: 'VALLEDUPAR', categoria: 'capitales', pista: 'Capital del Cesar, tierra del vallenato' },
     { palabra: 'BUCARAMANGA', categoria: 'capitales', pista: 'Capital de Santander, la Ciudad Bonita' },
-    { palabra: 'VAILLAVICENCIO', categoria: 'capitales', pista: 'Capital del Meta, puerta al llano' },
+    { palabra: 'VILLAVICENCIO', categoria: 'capitales', pista: 'Capital del Meta, puerta al llano' },
     { palabra: 'PUERTO CARREÑO', categoria: 'capitales', pista: 'Capital del Vichada' },
-    { palabra: 'SAN JOSE GUAVIARE', categoria: 'capitales', pista: 'Capital del Guaviare' },
+    { palabra: 'SAN JOSE DEL GUAVIARE', categoria: 'capitales', pista: 'Capital del Guaviare' },
 
     { palabra: 'GUACAMAYAS', categoria: 'Animales Colombia', pista: 'Aves psitácidas muy coloridas' },
-    { palabra: 'OSOANTEOJOS', categoria: 'Animales Colombia', pista: 'Único oso nativo de Sudamérica' },
+    { palabra: 'OSO DE ANTEOJOS', categoria: 'Animales Colombia', pista: 'Único oso nativo de Sudamérica' },
     { palabra: 'HIPOPÁTAMOS', categoria: 'Animales Colombia', pista: 'Especie introducida en el Magdalena Medio' },
     { palabra: 'MURCIÉLAGOS', categoria: 'Animales Colombia', pista: 'Mamíferos voladores nocturnos' },
     { palabra: 'CHINCHILLAS', categoria: 'Animales Colombia', pista: 'Pequeños roedores de zonas altas' },
@@ -78,5 +78,5 @@ export const PALABRAS = [
     { palabra: 'SALCHICHÓN', categoria: 'Comidas Tipicas', pista: 'Embutido popular de carnes frías' },
     { palabra: 'HOJUELITAS', categoria: 'Comidas Tipicas', pista: 'Galletas fritas tradicionales navideñas' },
     { palabra: 'MANJARBLANCO', categoria: 'Comidas Tipicas', pista: 'Dulce típico de leche cortada' },
-    { palabra: 'BANDEJAPAISA', categoria: 'Comidas Tipicas', pista: 'Plato típico de Antioquia' },
+    { palabra: 'BANDEJA PAISA', categoria: 'Comidas Tipicas', pista: 'Plato típico de Antioquia' },
 ]
