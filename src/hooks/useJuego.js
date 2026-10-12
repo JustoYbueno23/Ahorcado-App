@@ -1,6 +1,6 @@
 import React from "react";
 import { PALABRAS } from '../data/palabras'
-import { useState, useEffect } from "react";
+import { useState, useEffect, } from "react";
 
 export const normalizar = (texto) => {
     return texto.toUpperCase()
@@ -22,6 +22,7 @@ export default function useJuego(categoria, nivel) {
     const [puntaje, setPuntaje] = useState(0);
     const [tiempo, setTiempo] = useState(null);
     const [bonoDado, setBonoDado] = useState(false);
+    const [pistaVisible, setPistaVisible] = useState(false);
 
     const elegirPalabra = () => {
         const porCategoria = categoria === 'Aleatoria' ? PALABRAS : PALABRAS.filter(
@@ -32,12 +33,20 @@ export default function useJuego(categoria, nivel) {
             if (nivel === 'Facil') return largo >= 4 && largo <= 6;
             if (nivel === 'Medio') return largo >= 7 && largo <= 9;
             if (nivel === 'Dificil') return largo >= 10;
+            return false;
         });
 
         const elegida = porNivel[Math.floor(Math.random() * porNivel.length)];
         if (elegida) {
             setPalabra(elegida.palabra);
             setPista(elegida.pista);
+            setAciertos([]);
+            setFallos([]);
+            setErrores(0);
+            setPuntaje(0);
+            setPistas(nivel === 'Facil' ? 2 : nivel === 'Medio' ? 1 : 0 );
+            setBonoDado(false);
+            setTiempo(nivel === 'Dificil' ? 90 : null);
         };
     };
 
@@ -85,13 +94,14 @@ export default function useJuego(categoria, nivel) {
             }
         }
     }
-    const perdido = errores >= 6;
+    const perdido = errores >= 6 || (nivel === 'Dificil' && tiempo === 0);
 
     const usarPista = () => {
-        if (pista <= 0 || ganado || perdido) {
+        if (pistas <= 0 || ganado || perdido) {
             return;
         }
-        setPistas(pista - 1);
+        setPistaVisible(true);
+        setPistas(pistas - 1);
         setPuntaje(puntaje - 15);
         const ocultas = [];
         for (let i = 0; i < letrasNecesarias.length; i++) {
@@ -102,7 +112,6 @@ export default function useJuego(categoria, nivel) {
         if (ocultas.length > 0) {
             const alAzar = ocultas[Math.floor(Math.random() * ocultas.length)];
             setAciertos([...aciertos, alAzar])
-
         }
     };
 
@@ -116,6 +125,20 @@ export default function useJuego(categoria, nivel) {
             setBonoDado(true);
         }
     }, [ganado]);
-return { palabra, pista, elegirPalabra, aciertos, fallos, errores, puntaje, tiempo, procesar, ganado, perdido };
 
+    useEffect(() =>{
+        if (nivel !== 'Dificil' || palabra === '' || ganado || perdido) {
+            return;
+        }
+        if (tiempo === null || tiempo <= 0) {
+            return;
+        }
+        const id = setInterval(() => {
+            setTiempo((t) => (t > 0 ? t - 1 : 0));
+        }, 1000);
+        return () => clearInterval (id);
+    }, [nivel, palabra, ganado, perdido, tiempo]); 
+
+    return { palabra, pista, pistas, pistaVisible, elegirPalabra, aciertos, fallos,
+        errores, puntaje, tiempo, procesar, usarPista, ganado, perdido };
 }
