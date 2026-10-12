@@ -1,6 +1,6 @@
 import React from "react";
 import { PALABRAS } from '../data/palabras'
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export const normalizar = (texto) => {
     return texto.toUpperCase()
@@ -14,10 +14,14 @@ export const normalizar = (texto) => {
 
 export default function useJuego(categoria, nivel) {
     const [pista, setPista] = useState('');
+    const [pistas, setPistas] = useState(nivel === 'Facil' ? 2 : nivel === 'Medio' ? 1 : 0);
     const [palabra, setPalabra] = useState('');
     const [aciertos, setAciertos] = useState([]);
     const [fallos, setFallos] = useState([]);
     const [errores, setErrores] = useState(0);
+    const [puntaje, setPuntaje] = useState(0);
+    const [tiempo, setTiempo] = useState(null);
+    const [bonoDado, setBonoDado] = useState(false);
 
     const elegirPalabra = () => {
         const porCategoria = categoria === 'Aleatoria' ? PALABRAS : PALABRAS.filter(
@@ -38,17 +42,27 @@ export default function useJuego(categoria, nivel) {
     };
 
     const procesar = (letra) => {
+        if (ganado || perdido) {
+            return;
+        }
         if (aciertos.includes(letra) || fallos.includes(letra)) {
             return;
         }
         const letraLimpia = normalizar(letra);
         const palabraLimpia = normalizar(palabra);
-
         if (palabraLimpia.includes(letraLimpia)) {
             setAciertos([...aciertos, letra]);
+            let veces = 0;
+            for (let i = 0; i < palabraLimpia.length; i++) {
+                if (palabraLimpia[i] === letraLimpia) {
+                    veces = veces + 1;
+                }
+            }
+            setPuntaje(puntaje + veces * 10)
         } else {
             setFallos([...fallos, letra]);
             setErrores(errores + 1);
+            setPuntaje(puntaje - 5);
         }
     };
 
@@ -58,7 +72,7 @@ export default function useJuego(categoria, nivel) {
         const l = normalizar(sinEspacio[i]);
         if (!letrasNecesarias.includes(l)) {
             letrasNecesarias.push(l);
-        }   
+        }
     }
 
     const aciertosLimpios = aciertos.map((a) => normalizar(a));
@@ -72,6 +86,36 @@ export default function useJuego(categoria, nivel) {
         }
     }
     const perdido = errores >= 6;
-    return { palabra, pista, elegirPalabra, aciertos, fallos, errores, procesar, ganado, perdido };
+
+    const usarPista = () => {
+        if (pista <= 0 || ganado || perdido) {
+            return;
+        }
+        setPistas(pista - 1);
+        setPuntaje(puntaje - 15);
+        const ocultas = [];
+        for (let i = 0; i < letrasNecesarias.length; i++) {
+            if (!aciertosLimpios.includes(letrasNecesarias[i])) {
+                ocultas.push(letrasNecesarias[i])
+            }
+        }
+        if (ocultas.length > 0) {
+            const alAzar = ocultas[Math.floor(Math.random() * ocultas.length)];
+            setAciertos([...aciertos, alAzar])
+
+        }
+    };
+
+    React.useEffect(() => {
+        if (ganado && !bonoDado) {
+            const vidas = 6 - errores;
+            let mult = 1;
+            if (nivel === 'Medio') mult = 2;
+            if (nivel === 'Dificil') mult = 3;
+            setPuntaje((puntaje + 50 + vidas * 10) * mult);
+            setBonoDado(true);
+        }
+    }, [ganado]);
+return { palabra, pista, elegirPalabra, aciertos, fallos, errores, puntaje, tiempo, procesar, ganado, perdido };
 
 }
