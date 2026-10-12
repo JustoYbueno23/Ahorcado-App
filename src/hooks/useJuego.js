@@ -51,5 +51,27 @@ export default function useJuego(categoria, nivel) {
             setErrores(errores + 1);
         }
     };
-    return { palabra, pista, elegirPalabra, aciertos, fallos, errores, procesar };
-}; 
+
+    const sinEspacio = palabra.replaceAll(' ', '');
+    const letrasNecesarias = [];
+    for (let i = 0; i < sinEspacio.length; i++) {
+        const l = normalizar(sinEspacio[i]);
+        if (!letrasNecesarias.includes(l)) {
+            letrasNecesarias.push(l);
+        }   
+    }
+
+    const aciertosLimpios = aciertos.map((a) => normalizar(a));
+    let ganado = false;
+    if (palabra !== '' && letrasNecesarias.length > 0) {
+        ganado = true;
+        for (let i = 0; i < letrasNecesarias.length; i++) {
+            if (!aciertosLimpios.includes(letrasNecesarias[i])) {
+                ganado = false;
+            }
+        }
+    }
+    const perdido = errores >= 6;
+    return { palabra, pista, elegirPalabra, aciertos, fallos, errores, procesar, ganado, perdido };
+
+}
