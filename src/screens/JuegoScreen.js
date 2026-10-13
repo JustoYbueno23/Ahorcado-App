@@ -8,6 +8,7 @@ import { colores } from "../theme/colores";
 import PalabraOculta from '../components/PalabraOculta';
 import ModalResultado from "../components/ModalResultado";
 import { useNavigation } from '@react-navigation/native';
+import  Ahorcado  from "../components/Ahorcado";
 
 export default function JuegoScreen({ route }) {
     const categoria = route.params ? route.params.categoria : 'Aleatoria';
@@ -32,9 +33,11 @@ export default function JuegoScreen({ route }) {
                 onNuevo={() => { elegirPalabra() }}
                 onMenu={() => navigation.navigate('Categoria')}
             />
-            <PalabraOculta palabra={palabra} aciertos={aciertos} />
-            <Teclado procesar={procesar} aciertos={aciertos} fallos={fallos} />
             <Marcador vidas={6 - errores} puntaje={puntaje} tiempo={tiempo} />
+            <PalabraOculta palabra={palabra} aciertos={aciertos} />
+            <Ahorcado errores={errores}/>
+            <Teclado procesar={procesar} aciertos={aciertos} fallos={fallos} />
+            
 
             <View style={styles.pista}>
                 <Pressable
