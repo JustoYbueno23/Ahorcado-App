@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Pressable, TextInput, } from 'react-native';
+import { StyleSheet, Text, View, Pressable } from 'react-native';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { colores } from "../theme/colores";
@@ -8,7 +8,7 @@ import { useState } from "react";
 
 export default function CategoriaScreen({ route }) {
     const navigation = useNavigation();
-    const nombre = route.params ? route.params.nombre: '';
+    const nombre = route.params ? route.params.nombre : '';
     const [categoria, setCategoria] = useState('');
     const [nivel, setNivel] = useState('');
 
@@ -33,7 +33,7 @@ export default function CategoriaScreen({ route }) {
                 <Pressable
                     style={({ pressed }) => [
                         styles.configButton,
-                        pressed && styles.configButtonPresionado,
+                        pressed && styles.ButtonPresionado,
                     ]}
                     onPress={abrirConfiguracion}
                     accessibilityRole="button"
@@ -48,7 +48,7 @@ export default function CategoriaScreen({ route }) {
             <View style={styles.seccionCate}>
                 <Text style={styles.tituloPantalla}>CATEGORIA</Text>
 
-                <Pressable style = {[
+                <Pressable style={[
                     styles.Button,
                     categoria === 'capitales' && styles.ButtonActivo
                 ]}
@@ -165,24 +165,24 @@ const styles = StyleSheet.create({
     },
 
     configButton: {
-        width:48,
-        height:48,
+        width: 48,
+        height: 48,
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 24,
     },
 
-    ButtonPresionado:{
+    ButtonPresionado: {
         opacity: 0.6,
     },
 
-    seccionCate:{
+    seccionCate: {
         flex: 1,
         gap: 12,
         paddingBottom: 16,
     },
 
-    Button:{
+    Button: {
         minHeight: 48,
         borderRadius: 8,
         backgroundColor: colores.boton,
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
         paddingVertical: 12
     },
 
-    ButtonActivo:{
+    ButtonActivo: {
         backgroundColor: colores.encabezado,
     },
 
@@ -201,16 +201,16 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
 
-    seccionDifi:{
-        marginTop:8,
+    seccionDifi: {
+        marginTop: 8,
     },
 
-    filaNiveles:{
+    filaNiveles: {
         flexDirection: 'row',
-        gap:8,
+        gap: 8,
     },
 
-    buttonLevel:{
+    buttonLevel: {
         flex: 1,
         minHeight: 48,
         borderRadius: 8,
@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
         marginTop: 12,
     },
 
-    buttonContinuar:{
+    buttonContinuar: {
         minHeight: 48,
         borderRadius: 8,
         backgroundColor: colores.boton,
