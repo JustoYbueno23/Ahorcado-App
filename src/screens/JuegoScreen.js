@@ -31,7 +31,7 @@ export default function JuegoScreen({ route }) {
                 palabra={palabra}
                 puntaje={puntaje}
                 onNuevo={() => { elegirPalabra() }}
-                onMenu={() => navigation.navigate('Categoria')}
+                onMenu={() => navigation.popToTop()}
             />
             <Marcador vidas={6 - errores} puntaje={puntaje} tiempo={tiempo} />
             <PalabraOculta palabra={palabra} aciertos={aciertos} />
