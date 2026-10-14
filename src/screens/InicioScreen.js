@@ -4,37 +4,35 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { colores } from "../theme/colores";
 import { useNavigation } from '@react-navigation/native';
+import { useTema } from '../hooks/useTema';
 
 export default function InicioScreen() {
+    const tema = useTema();
     const [text, onChangeText] = useState('');
     const navigation = useNavigation();
-
     const abrirConfiguracion = () => {
         navigation.navigate('Configuracion', {nombre: 'Configuracion'});
     };
-
     const abrirJuego = () => {
         if (text === '') {
             alert('Escribe tu nombre para jugar')
             return;
         }
         navigation.navigate('Categoria', {nombre: text});
-    };
-    
+    };   
     const abrirEstadisticas = () => {
         navigation.navigate('Estadisticas', {nombre: 'Estadisticas'});
     }
-
     const abrirInstrucciones = () => {
         navigation.navigate('Instrucciones', {nombre: 'Instrucciones'});
     }
 
 
     return (
-        <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
+        <SafeAreaView style={[styles.container, {backgroundColor: tema.fondo}]} edges={['top', 'left', 'right']}>
             <View style={styles.topBar}>
                 <View style={styles.espaciador} />
-                <Text style={styles.tituloPantalla}>AHORCADO</Text>
+                <Text style={[styles.tituloPantalla, {color: tema.encabezado}]}>AHORCADO</Text>
 
                 <Pressable
                     style={({ pressed }) => [
@@ -57,7 +55,7 @@ export default function InicioScreen() {
 
             <View style={styles.formulario}>
                 <TextInput
-                    style={styles.input}
+                    style={[styles.input, {backgroundColor: tema.encabezado}]}
                     onChangeText={onChangeText}
                     value={text}
                     placeholder="Escriba un nombre"

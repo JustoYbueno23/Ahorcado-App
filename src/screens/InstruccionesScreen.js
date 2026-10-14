@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from "@expo/vector-icons";
 import { colores } from '../theme/colores';
 import { useNavigation } from '@react-navigation/native';
+import { useTema } from "../hooks/useTema";
 
 const DATA = [
     {
@@ -18,14 +19,18 @@ const DATA = [
 ];
 
 export default function InstruccionesScreen() {
-    const abrirConfiguracion = () => {/*Por ahora nada, luego lo cambio cuando
-        las funciones */};
+
+    const navigation = useNavigation();
+    const tema = useTema();
+    const abrirConfiguracion = () => {
+        navigation.navigate('Configuracion');
+    };
 
     return (
-        <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
+        <SafeAreaView style={[styles.container, { backgroundColor: tema.fondo }]} edges={['top', 'left', 'right']}>
             <View style={styles.topBar}>
                 <View style={styles.espaciador} />
-                <Text style={styles.tituloPantalla}>Reglas</Text>
+                <Text style={[styles.tituloPantalla, { color: tema.encabezado }]}>Reglas</Text>
                 <Pressable
                     style={({ pressed }) => [
                         styles.configButton,
