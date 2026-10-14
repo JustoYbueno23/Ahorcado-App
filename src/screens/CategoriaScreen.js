@@ -46,7 +46,9 @@ export default function CategoriaScreen({ route }) {
             </View>
 
             <View>
-                <Text style={[styles.saludo, { color: tema.texto }]}> Hola {nombre} </Text>
+                <Text style={[styles.saludo, { color: tema.texto }]}>
+                    ¡Hola, <Text style={{ color: colores.boton, fontWeight: 'bold' }}>{nombre}</Text>! Elige tu reto
+                </Text>
             </View>
             <View style={styles.seccionCate}>
                 <Text style={styles.tituloPantalla}>CATEGORIA</Text>
@@ -166,10 +168,11 @@ const styles = StyleSheet.create({
         color: colores.encabezado,
     },
 
-    saludo: { fontSize: 18, 
-        fontWeight: '600', 
-        color: colores.encabezado, 
-        marginVertical: 8 
+    saludo: {
+        fontSize: 22,
+        fontWeight: 'bold',
+        color: colores.encabezado,
+        marginVertical: 8
     },
 
     configButton: {
