@@ -1,44 +1,44 @@
-import AsyncStorage, { useAsyncStorage } from "@react-native-async-storage/async-storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export const guardar = async (ClipboardEvent, valor) => {
+export async function guardarStats(stats) {
     try {
-        await AsyncStorage.setItem('@ahorcado_statas', JSON.stringify(stats));
+        await AsyncStorage.setItem('@ahorcado_stats', JSON.stringify(stats));
     } catch (e) {
-        console.log('No se pudo guardar')
+        console.log('No se pudo guardar');
     }
-};
+}
 
-export const leerStats = async () => {
+export async function leerStats() {
     try {
         const texto = await AsyncStorage.getItem('@ahorcado_stats');
         if (texto === null) {
             return { jugadas: 0, ganadas: 0, perdidas: 0, racha: 0, mejorRacha: 0 };
         }
         return JSON.parse(texto);
-    } catch (a) {
+    } catch (e) {
         return { jugadas: 0, ganadas: 0, perdidas: 0, racha: 0, mejorRacha: 0 };
     }
-};
+}
 
 export async function guardarRanking(ranking) {
     try {
-        await AsyncStorage.setItem('@ahorcadp_ranking', JSON.stringify(ranking))
+        await AsyncStorage.setItem('@ahorcado_ranking', JSON.stringify(ranking));
     } catch (e) {
-        console.log('no se pudo guardar');
+        console.log('No se pudo guardar');
     }
-};
+}
 
 export async function leerRanking() {
     try {
         const texto = await AsyncStorage.getItem('@ahorcado_ranking');
         if (texto === null) {
-            return []
+            return [];
         }
         return JSON.parse(texto);
     } catch (e) {
-        return []
+        return [];
     }
-};
+}
 
 export async function guardarConfig(config) {
     try {
@@ -48,7 +48,6 @@ export async function guardarConfig(config) {
     }
 }
 
-// Lee ajustes o deja prendidos en claro
 export async function leerConfig() {
     try {
         const texto = await AsyncStorage.getItem('@ahorcado_config');
