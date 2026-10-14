@@ -9,7 +9,7 @@ import Marcador from '../components/Marcador';
 import { colores } from "../theme/colores";
 import PalabraOculta from '../components/PalabraOculta';
 import ModalResultado from "../components/ModalResultado";
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import Ahorcado from "../components/Ahorcado";
 import { guardarStats, guardarRanking, leerRanking, leerStats, leerConfig } from '../storage/almacenamiento';
 import { useTema } from '../hooks/useTema';
@@ -22,24 +22,26 @@ export default function JuegoScreen({ route }) {
     const { palabra, pista, pistas, pistaVisible, elegirPalabra, procesar, aciertos, fallos,
         errores, puntaje, tiempo, usarPista, ganado, perdido,
     } = useJuego(categoria, nivel);
+    const tema = useTema();
     const navigation = useNavigation();
     const [guardado, setGuardado] = useState(false);
     const [vibrar, setVibrar] = useState(true);
     const [sonar, setSonar] = useState(true);
-    const tema = useTema();
 
     useEffect(() => {
         elegirPalabra();
     }, []);
 
-    useEffect(() => {
-        async function cargar() {
-            const config = await leerConfig();
-            setVibrar(config.vibracion);
-            setSonar(config.sonido)
-        }
-        cargar();
-    }, []);
+    useFocusEffect(
+        React.useCallback(() => {
+            async function cargar() {
+                const config = await leerConfig();
+                setVibrar(config.vibracion);
+                setSonar(config.sonido);
+            }
+            cargar();
+        }, [])
+    );
 
     useEffect(() => {
         function atras() {
@@ -50,6 +52,7 @@ export default function JuegoScreen({ route }) {
                 ]);
                 return true;
             }
+            return false;
         }
         const sub = BackHandler.addEventListener('hardwareBackPress', atras);
         return () => sub.remove();
@@ -66,9 +69,7 @@ export default function JuegoScreen({ route }) {
             if (tipo === 'derrota') archivo = require('../../assets/sonidos/Derrota.mp3');
             const player = createAudioPlayer(archivo);
             player.play()
-        } catch (e) {
-            console.log('No sono', e);
-        }
+        } catch (e) { }
     }
 
     async function manejarLetra(letra) {
@@ -82,21 +83,15 @@ export default function JuegoScreen({ route }) {
                     await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
                 }
             } catch (e) { }
-        }
-        if (acierto) {
-            await tocar('acierto');
-        } else {
-            await tocar('error')
+            await tocar(acierto ? 'acierto' : 'error');
         }
     }
 
     useEffect(() => {
-        if (ganado) {
-            tocar('victoria');
-        }
-        if (perdido) {
-            tocar('derrota');
-        }
+        if (ganado) tocar('victoria');
+
+        if (perdido) tocar('derrota');
+
     }, [ganado, perdido])
 
 
@@ -114,12 +109,12 @@ export default function JuegoScreen({ route }) {
                 };
                 await guardarStats(nuevo);
                 const lista = await leerRanking();
-                const vidas = 6 - errores;
+                const vidas = Math.max(0, 6 - errores);
                 let mult = 1;
                 if (nivel === 'Medio') mult = 2;
                 if (nivel === 'Dificil') mult = 3;
                 const final = ganado ? (puntaje + 50 + vidas * 10) * mult : puntaje;
-                lista.push({ nombre: nombre, puntaje: final, categoria: categoria, nivel: nivel, fecha: 'hoy' });
+                lista.push({ nombre, puntaje: final, categoria, nivel, fecha: 'hoy' });
                 lista.sort((a, b) => b.puntaje - a.puntaje);
                 await guardarRanking(lista.slice(0, 10));
                 setGuardado(true);
@@ -171,15 +166,18 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 16
     },
+
     topBar: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between'
     },
+
     espaciador: {
         width: 48,
         height: 48
     },
+
     configButton:
     {
         width: 48,
@@ -187,25 +185,30 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center'
     },
+
     categoria: {
-        fontSize: 14,
+        fontSize: 20,
         fontWeight: 'bold'
     },
+
     cajaPista: {
         borderRadius: 12,
         padding: 12,
         gap: 8,
         marginTop: 8
     },
+
     tituloPista: {
-        fontSize: 16,
+        fontSize: 18,
         fontWeight: 'bold',
         textAlign: 'center'
     },
+
     textoPistaAyuda: {
-        fontSize: 16,
+        fontSize: 27,
         textAlign: 'center'
     },
+
     botonPista: {
         minHeight: 48,
         borderRadius: 8,
@@ -213,10 +216,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center'
     },
+
     textoBotonPista: {
         color: '#fff',
         fontWeight: 'bold'
     },
+
     tecladoAbajo: {
         flex: 1,
         justifyContent: 'flex-end'

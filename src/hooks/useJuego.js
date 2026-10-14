@@ -45,6 +45,7 @@ export default function useJuego(categoria, nivel) {
             setErrores(0);
             setPuntaje(0);
             setPistas(nivel === 'Facil' ? 2 : nivel === 'Medio' ? 1 : 0 );
+            setPistaVisible(false)
             setBonoDado(false);
             setTiempo(nivel === 'Dificil' ? 90 : null);
         };
