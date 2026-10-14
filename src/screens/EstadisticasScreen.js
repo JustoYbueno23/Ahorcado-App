@@ -38,7 +38,7 @@ export default function EstadisticasScreen() {
                     </View>
                 )}
             />
-        </SafeAreaView>
+        </SafeAreaView >
     );
 }
 
