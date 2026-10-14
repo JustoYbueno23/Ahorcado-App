@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Text, Pressable, View, StyleSheet } from 'react-native';
 import { SafeAreaView } from "react-native-safe-area-context";
-import useJuego from '../hooks/useJuego'
+import * as Haptics from 'expo-haptics'
+import useJuego, { normalizar }  from '../hooks/useJuego'
 import Teclado from '../components/Teclado';
 import Marcador from '../components/Marcador';
 import { colores } from "../theme/colores";
@@ -9,22 +10,43 @@ import PalabraOculta from '../components/PalabraOculta';
 import ModalResultado from "../components/ModalResultado";
 import { useNavigation } from '@react-navigation/native';
 import Ahorcado from "../components/Ahorcado";
-import { guardarStats, guardarRanking, leerRanking, leerStats } from '../storage/almacenamiento';
+import { guardarStats, guardarRanking, leerRanking, leerStats, leerConfig } from '../storage/almacenamiento';
 
 export default function JuegoScreen({ route }) {
     const categoria = route.params ? route.params.categoria : 'Aleatoria';
     const nivel = route.params ? route.params.nivel : 'Facil';
     const nombre = route.params ? route.params.nombre : 'Jugador';
-
     const { palabra, pista, pistas, pistaVisible, elegirPalabra, procesar, aciertos, fallos,
         errores, puntaje, tiempo, usarPista, ganado, perdido,
     } = useJuego(categoria, nivel);
     const navigation = useNavigation();
     const [guardado, setGuardado] = useState(false);
+    const [vibrar, setVibrar] = useState(true);
 
     useEffect(() => {
         elegirPalabra();
     }, []);
+
+    useEffect(() => {
+        async function cargar() {
+            const config = await leerConfig();
+            setVibrar(config.vibracion);
+        }
+        cargar();
+    }, []);
+
+    async function manejarLetra(letra) {
+        procesar(letra);
+        if (!vibrar || ganado || perdido) {
+            return;
+        } try {
+            if (normalizar(palabra).includes(normalizar(letra))) {
+                await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            } else {
+                await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+            }
+        } catch (e) { }
+    }
 
     useEffect(() => {
         async function guardarPartida() {
@@ -65,11 +87,10 @@ export default function JuegoScreen({ route }) {
                 onNuevo={() => { elegirPalabra(); setGuardado(false) }}
                 onMenu={() => navigation.popToTop()}
             />
-            <Marcador vidas={6 - errores} puntaje={puntaje} tiempo={tiempo} />
+            <Marcador vidas={Math.max(0, 6 - errores)} puntaje={puntaje} tiempo={tiempo} />
             <PalabraOculta palabra={palabra} aciertos={aciertos} />
             <Ahorcado errores={errores} />
-            <Teclado procesar={procesar} aciertos={aciertos} fallos={fallos} />
-
+            <Teclado procesar={manejarLetra} aciertos={aciertos} fallos={fallos} />
 
             <View style={styles.pista}>
                 <Pressable
