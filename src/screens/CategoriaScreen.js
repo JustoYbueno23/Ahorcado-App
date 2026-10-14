@@ -5,12 +5,14 @@ import { Ionicons } from "@expo/vector-icons";
 import { colores } from "../theme/colores";
 import { useNavigation } from '@react-navigation/native';
 import { useState } from "react";
+import { useTema } from '../hooks/useTema';
 
 export default function CategoriaScreen({ route }) {
     const navigation = useNavigation();
     const nombre = route.params ? route.params.nombre : '';
     const [categoria, setCategoria] = useState('');
     const [nivel, setNivel] = useState('');
+    const tema = useTema();
 
     const abrirConfiguracion = () => {
         navigation.navigate('Configuracion', { nombre: 'Configuracion' });
@@ -25,10 +27,10 @@ export default function CategoriaScreen({ route }) {
     }
 
     return (
-        <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
+        <SafeAreaView style={[styles.container, { backgroundColor: tema.fondo }]} edges={['top', 'left', 'right']}>
             <View style={styles.topBar}>
                 <View style={styles.espaciador} />
-                <Text style={styles.tituloPantalla}>CATEGORIA Y NIVEL</Text>
+                <Text style={[styles.tituloPantalla, { color: tema.encabezado }]}>CATEGORIA Y NIVEL</Text>
 
                 <Pressable
                     style={({ pressed }) => [
@@ -43,7 +45,9 @@ export default function CategoriaScreen({ route }) {
                 </Pressable>
             </View>
 
-            <Text> Hola {nombre} </Text>
+            <View>
+                <Text style={[styles.saludo, { color: tema.texto }]}> Hola {nombre} </Text>
+            </View>
             <View style={styles.seccionCate}>
                 <Text style={styles.tituloPantalla}>CATEGORIA</Text>
 
@@ -160,6 +164,12 @@ const styles = StyleSheet.create({
         fontSize: 26,
         fontWeight: 'bold',
         color: colores.encabezado,
+    },
+
+    saludo: { fontSize: 18, 
+        fontWeight: '600', 
+        color: colores.encabezado, 
+        marginVertical: 8 
     },
 
     configButton: {

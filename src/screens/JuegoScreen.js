@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Text, Pressable, View, StyleSheet } from 'react-native';
+import { Text, Pressable, View, StyleSheet, BackHandler, Alert } from 'react-native';
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as Haptics from 'expo-haptics'
-import useJuego, { normalizar }  from '../hooks/useJuego'
+import { createAudioPlayer } from "expo-audio";
+import useJuego, { normalizar } from '../hooks/useJuego'
 import Teclado from '../components/Teclado';
 import Marcador from '../components/Marcador';
 import { colores } from "../theme/colores";
@@ -11,6 +12,8 @@ import ModalResultado from "../components/ModalResultado";
 import { useNavigation } from '@react-navigation/native';
 import Ahorcado from "../components/Ahorcado";
 import { guardarStats, guardarRanking, leerRanking, leerStats, leerConfig } from '../storage/almacenamiento';
+import { useTema } from '../hooks/useTema';
+import { Ionicons } from "@expo/vector-icons";
 
 export default function JuegoScreen({ route }) {
     const categoria = route.params ? route.params.categoria : 'Aleatoria';
@@ -22,6 +25,8 @@ export default function JuegoScreen({ route }) {
     const navigation = useNavigation();
     const [guardado, setGuardado] = useState(false);
     const [vibrar, setVibrar] = useState(true);
+    const [sonar, setSonar] = useState(true);
+    const tema = useTema();
 
     useEffect(() => {
         elegirPalabra();
@@ -31,22 +36,69 @@ export default function JuegoScreen({ route }) {
         async function cargar() {
             const config = await leerConfig();
             setVibrar(config.vibracion);
+            setSonar(config.sonido)
         }
         cargar();
     }, []);
 
+    useEffect(() => {
+        function atras() {
+            if (!ganado && !perdido && palabra !== '') {
+                Alert.alert('Salir', '¿Salir de la partida?', [
+                    { text: 'No' },
+                    { text: 'Si', onPress: () => navigation.popToTop() },
+                ]);
+                return true;
+            }
+        }
+        const sub = BackHandler.addEventListener('hardwareBackPress', atras);
+        return () => sub.remove();
+    }, [ganado, perdido, palabra]);
+
+    async function tocar(tipo) {
+        if (!sonar) {
+            return
+        }
+        try {
+            let archivo = require('../../assets/sonidos/Aciertos.mp3');
+            if (tipo === 'error') archivo = require('../../assets/sonidos/Error.mp3');
+            if (tipo === 'victoria') archivo = require('../../assets/sonidos/Victorias.mp3');
+            if (tipo === 'derrota') archivo = require('../../assets/sonidos/Derrota.mp3');
+            const player = createAudioPlayer(archivo);
+            player.play()
+        } catch (e) {
+            console.log('No sono', e);
+        }
+    }
+
     async function manejarLetra(letra) {
         procesar(letra);
-        if (!vibrar || ganado || perdido) {
-            return;
-        } try {
-            if (normalizar(palabra).includes(normalizar(letra))) {
-                await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            } else {
-                await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
-            }
-        } catch (e) { }
+        const acierto = normalizar(palabra).includes(normalizar(letra));
+        if (vibrar && !ganado && !perdido) {
+            try {
+                if (acierto) {
+                    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                } else {
+                    await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+                }
+            } catch (e) { }
+        }
+        if (acierto) {
+            await tocar('acierto');
+        } else {
+            await tocar('error')
+        }
     }
+
+    useEffect(() => {
+        if (ganado) {
+            tocar('victoria');
+        }
+        if (perdido) {
+            tocar('derrota');
+        }
+    }, [ganado, perdido])
+
 
     useEffect(() => {
         async function guardarPartida() {
@@ -77,53 +129,97 @@ export default function JuegoScreen({ route }) {
     }, [ganado, perdido]);
 
     return (
-        <SafeAreaView style={{ flex: 1, padding: 16, backgroundColor: '#fff' }}>
-            {pistaVisible ? <Text>{pista}</Text> : <Text> Toca pista Para ver ayuda</Text>}
+        <SafeAreaView style={[styles.container, { backgroundColor: tema.fondo }]} edges={['top', 'left', 'right']}>
+            <View style={styles.topBar}>
+                <View style={styles.espaciador} />
+                <Text style={[styles.categoria, { color: tema.texto }]}>{categoria} • {nivel}</Text>
+                <Pressable style={styles.configButton} onPress={() => navigation.navigate('Configuracion')}>
+                    <Ionicons name="settings-outline" size={24} color={tema.encabezado} />
+                </Pressable>
+            </View>
+            <Marcador vidas={Math.max(0, 6 - errores)} puntaje={puntaje} tiempo={tiempo} />
+            <Ahorcado errores={errores} />
+            <PalabraOculta palabra={palabra} aciertos={aciertos} />
+            <Teclado procesar={manejarLetra} aciertos={aciertos} fallos={fallos} />
+            <View style={[styles.cajaPista, { backgroundColor: tema.superficie }]}>
+                <Text style={[styles.tituloPista, { color: tema.encabezado }]}>PISTA ({pistas})</Text>
+                <Text style={[styles.textoAyuda, { color: tema.texto }]}>
+                    {pistaVisible ? pista : 'Toca el botón para ver ayuda'}
+                </Text>
+                <Pressable
+                    style={[styles.botonPista, (pistas <= 0 || ganado || perdido) && { opacity: 0.4 }]}
+                    onPress={usarPista}
+                    disabled={pistas <= 0 || ganado || perdido}
+                >
+                    <Text style={styles.textoBoton}>USAR PISTA -15</Text>
+                </Pressable>
+            </View>
             <ModalResultado
                 visible={ganado || perdido}
                 ganado={ganado}
                 palabra={palabra}
                 puntaje={puntaje}
-                onNuevo={() => { elegirPalabra(); setGuardado(false) }}
+                onNuevo={() => { elegirPalabra(); setGuardado(false); }}
                 onMenu={() => navigation.popToTop()}
             />
-            <Marcador vidas={Math.max(0, 6 - errores)} puntaje={puntaje} tiempo={tiempo} />
-            <PalabraOculta palabra={palabra} aciertos={aciertos} />
-            <Ahorcado errores={errores} />
-            <Teclado procesar={manejarLetra} aciertos={aciertos} fallos={fallos} />
-
-            <View style={styles.pista}>
-                <Pressable
-                    style={({ pressed }) => [
-                        styles.Botonpista,
-                        pressed && { opacity: 0.6 },
-                    ]}
-                    onPress={usarPista}
-                    disabled={pistas <= 0 || ganado || perdido}
-                >
-                    <Text style={styles.textoPista}> PISTA ({pistas})</Text>
-                </Pressable>
-            </View>
         </SafeAreaView>
     );
 }
-const styles = StyleSheet.create({
-    pista: {
-        marginTop: 8,
-    },
 
-    Botonpista: {
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        padding: 16
+    },
+    topBar: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between'
+    },
+    espaciador: {
+        width: 48,
+        height: 48
+    },
+    configButton:
+    {
+        width: 48,
+        height: 48,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    categoria: {
+        fontSize: 14,
+        fontWeight: 'bold'
+    },
+    cajaPista: {
+        borderRadius: 12,
+        padding: 12,
+        gap: 8,
+        marginTop: 8
+    },
+    tituloPista: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        textAlign: 'center'
+    },
+    textoPistaAyuda: {
+        fontSize: 16,
+        textAlign: 'center'
+    },
+    botonPista: {
         minHeight: 48,
         borderRadius: 8,
         backgroundColor: colores.boton,
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'center'
     },
-
-    textoPista: {
+    textoBotonPista: {
         color: '#fff',
-        fontSize: 16,
         fontWeight: 'bold'
+    },
+    tecladoAbajo: {
+        flex: 1,
+        justifyContent: 'flex-end'
     },
 })
 
