@@ -44,7 +44,6 @@ export default function CategoriaScreen({ route }) {
             </View>
 
             <Text> Hola {nombre} </Text>
-
             <View style={styles.seccionCate}>
                 <Text style={styles.tituloPantalla}>CATEGORIA</Text>
 
@@ -134,7 +133,6 @@ export default function CategoriaScreen({ route }) {
                         <Text style={styles.textButton}> CONTINUAR </Text>
                     </Pressable>
                 </View>
-
             </View>
         </SafeAreaView>
     );
