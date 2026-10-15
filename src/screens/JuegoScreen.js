@@ -83,7 +83,11 @@ export default function JuegoScreen({ route }) {
                     await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
                 }
             } catch (e) { }
-            await tocar(acierto ? 'acierto' : 'error');
+        }
+        if (acierto) {
+            await tocar('acierto');
+        } else {
+            await tocar('error');
         }
     }
 
@@ -225,6 +229,16 @@ const styles = StyleSheet.create({
     tecladoAbajo: {
         flex: 1,
         justifyContent: 'flex-end'
+    },
+
+    textoAyuda: {
+        fontSize: 17,
+        textAlign: 'center'
+    },
+
+    textoBoton: {
+        color: '#fff',
+        fontWeight: 'bold'
     },
 })
 
